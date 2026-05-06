@@ -1,0 +1,13 @@
+streamlit
+langchain
+langchain-community
+langchain-text-splitters
+chromadb
+sentence-transformers
+pyyaml
+python-dotenv
+openai
+langchain-chroma
+langchain-huggingface
+ollama
+rank-bm25

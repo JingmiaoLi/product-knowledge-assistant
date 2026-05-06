@@ -1,0 +1,885 @@
+/* =========================
+   Global app layout
+   ========================= */
+
+.stApp {
+    background: #f7f7f8;
+    color: #111827;
+}
+
+.block-container {
+    max-width: 960px;
+    padding-top: 2rem;
+    padding-bottom: 7rem;
+}
+
+footer {
+    visibility: hidden;
+}
+
+/* =========================
+   Top header
+   ========================= */
+/* =========================
+   Global app layout
+   ========================= */
+
+.stApp {
+    background: #f7f7f8;
+    color: #111827;
+}
+
+.block-container {
+    max-width: 1280px;
+    padding-top: 3.2rem;
+    padding-bottom: 7rem;
+}
+
+footer {
+    visibility: hidden;
+}
+
+/* =========================
+   Lightweight app header
+   ========================= */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0.4rem 0 1rem 0;
+    margin-bottom: 0.4rem;
+}
+
+.app-header-text {
+    min-width: 0;
+}
+
+.app-title {
+    color: #111827;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+}
+/* =========================
+   Custom chat rows
+   ========================= */
+
+.chat-row {
+    display: flex;
+    width: 100%;
+    margin: 0.8rem 0;
+}
+
+.user-row {
+    justify-content: flex-end;
+}
+
+.user-bubble {
+    max-width: 68%;
+    background: #10a37f;
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-radius: 18px 18px 4px 18px;
+    font-size: 1rem;
+    line-height: 1.55;
+    box-shadow: 0 4px 14px rgba(16, 163, 127, 0.18);
+    word-wrap: break-word;
+}
+
+/* Assistant layout */
+.assistant-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #ffb020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    margin-top: 0.2rem;
+}
+
+/* Make Streamlit columns used for assistant messages feel aligned */
+div[data-testid="column"] div[data-testid="stMarkdownContainer"] {
+    line-height: 1.65;
+    font-size: 1rem;
+}
+
+
+/* =========================
+   Sidebar
+   ========================= */
+
+.sidebar-title {
+    color: #111827;
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 0.35rem;
+}
+
+.sidebar-subtitle {
+    color: #6b7280;
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+section[data-testid="stSidebar"] {
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+}
+
+section[data-testid="stSidebar"] div[data-testid="stExpander"] {
+    box-shadow: none;
+}
+
+/* =========================
+   Streamlit chat message fallback styling
+   ========================= */
+
+div[data-testid="stChatMessage"] {
+    background: transparent;
+    padding: 0.45rem 0;
+}
+
+div[data-testid="stChatMessage"] p,
+div[data-testid="stChatMessage"] li,
+div[data-testid="stChatMessage"] ol,
+div[data-testid="stChatMessage"] ul,
+div[data-testid="stChatMessage"] div,
+div[data-testid="stMarkdownContainer"] {
+    color: #111827 !important;
+}
+
+div[data-testid="stChatMessage"] code,
+div[data-testid="stMarkdownContainer"] code {
+    color: #0f7a43 !important;
+    background: #f3f4f6 !important;
+    border-radius: 6px;
+    padding: 0.12rem 0.32rem;
+}
+
+/* =========================
+   Welcome card
+   ========================= */
+
+.welcome-card {
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 1rem 1.15rem;
+    color: #111827;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.welcome-title {
+    color: #111827;
+    font-size: 1rem;
+    font-weight: 750;
+    margin-bottom: 0.35rem;
+}
+
+.welcome-text {
+    color: #6b7280;
+    font-size: 0.92rem;
+    line-height: 1.55;
+}
+
+/* =========================
+   Metadata pills
+   ========================= */
+
+.chat-meta-row {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+    margin-bottom: 0.35rem;
+}
+
+.chat-meta-pill {
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    background: #ffffff;
+    padding: 0.32rem 0.62rem;
+    color: #4b5563;
+    font-size: 0.78rem;
+}
+
+/* =========================
+   Source badges
+   ========================= */
+
+.badge {
+    display: inline-block;
+    padding: 0.24rem 0.55rem;
+    border-radius: 999px;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+    font-size: 0.78rem;
+    margin-right: 0.35rem;
+    margin-bottom: 0.35rem;
+}
+
+.accent-badge {
+    display: inline-block;
+    padding: 0.24rem 0.55rem;
+    border-radius: 999px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+    font-size: 0.78rem;
+    margin-right: 0.35rem;
+    margin-bottom: 0.35rem;
+}
+
+.source-help {
+    color: #6b7280;
+    font-size: 0.86rem;
+    margin-bottom: 0.7rem;
+}
+
+/* =========================
+   Expanders
+   ========================= */
+
+div[data-testid="stExpander"] {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+    margin-top: 0.55rem;
+}
+
+div[data-testid="stExpander"] summary {
+    color: #111827 !important;
+    font-weight: 650;
+}
+
+/* =========================
+   Buttons
+   ========================= */
+
+.stButton > button {
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #111827;
+    font-weight: 650;
+}
+
+.stButton > button:hover {
+    border-color: #10a37f;
+    background: #f0fdf4;
+    color: #065f46;
+}
+
+/* =========================
+   Chat input - aligned with main content
+   ========================= */
+
+div[data-testid="stBottomBlockContainer"] {
+    width: 100% !important;
+    background: #f7f7f8 !important;
+    padding: 0.75rem 0 1rem 0 !important;
+}
+
+div[data-testid="stBottomBlockContainer"] > div {
+    max-width: 1280px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 1rem !important;
+}
+
+div[data-testid="stChatInput"] {
+    width: 100% !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+div[data-testid="stChatInput"] > div {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+div[data-testid="stChatInput"] form {
+    width: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 24px !important;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.10) !important;
+    padding: 0.35rem 0.45rem 0.35rem 0.85rem !important;
+}
+
+div[data-testid="stChatInput"] textarea {
+    background: transparent !important;
+    color: #111827 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    min-height: 52px !important;
+    max-height: 180px !important;
+    font-size: 1rem !important;
+    line-height: 1.45 !important;
+    padding: 0.85rem 0.5rem !important;
+}
+
+div[data-testid="stChatInput"] textarea:focus {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+div[data-testid="stChatInput"] form:focus-within {
+    border-color: #d1d5db !important;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.10) !important;
+}
+
+div[data-testid="stChatInput"] button {
+    border-radius: 999px !important;
+}
+
+/* =========================
+   Status box
+   ========================= */
+
+div[data-testid="stStatusWidget"] {
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+}
+
+/* =========================
+   Compact sidebar diagnostics
+   ========================= */
+
+section[data-testid="stSidebar"] {
+    background: #ffffff !important;
+    border-right: 1px solid #e5e7eb !important;
+}
+
+/* Sidebar inner padding */
+section[data-testid="stSidebar"] > div {
+    padding-top: 1.2rem !important;
+    padding-left: 1.2rem !important;
+    padding-right: 1.2rem !important;
+}
+
+/* Sidebar main title */
+section[data-testid="stSidebar"] h1 {
+    font-size: 1.35rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.45rem !important;
+}
+
+/* Sidebar section titles */
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3 {
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.45rem !important;
+}
+
+/* Sidebar paragraph / caption text */
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] li,
+section[data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] {
+    font-size: 0.88rem !important;
+    line-height: 1.35 !important;
+}
+
+/* Reduce vertical spacing between sidebar elements */
+section[data-testid="stSidebar"] .stMarkdown {
+    margin-bottom: 0.25rem !important;
+}
+
+/* Compact divider */
+section[data-testid="stSidebar"] hr {
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+/* Compact code badges such as `ollama`, `0.65`, etc. */
+section[data-testid="stSidebar"] code {
+    font-size: 0.82rem !important;
+    padding: 0.08rem 0.28rem !important;
+    border-radius: 6px !important;
+}
+
+/* Make sidebar button less tall */
+section[data-testid="stSidebar"] .stButton > button {
+    min-height: 2.2rem !important;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}
+
+
+/* =========================
+   Example question suggestions
+   ========================= */
+
+.example-label {
+    color: #6b7280;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0.65rem 0 0.4rem 0;
+}
+
+/* Container marker for example question area */
+.example-questions {
+    margin-top: 0.25rem;
+}
+
+/* Lighter suggestion-chip style for example buttons */
+.example-questions button {
+    width: 100%;
+    border-radius: 999px !important;
+    border: 1px solid #e5e7eb !important;
+    background: #fafafa !important;
+    color: #374151 !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    padding: 0.42rem 0.8rem !important;
+    min-height: 2.35rem !important;
+    box-shadow: none !important;
+}
+
+.example-questions button:hover {
+    border-color: #d1d5db !important;
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+}
+
+.example-questions button:focus {
+    border-color: #d1d5db !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* =========================
+   Example question pills
+   ========================= */
+
+div[data-testid="stPills"] {
+    margin-top: 0.6rem;
+}
+
+div[data-testid="stPills"] label {
+    color: #9ca3af !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+}
+
+div[data-testid="stPills"] button {
+    border: 1px solid #edf0f3 !important;
+    background: #fbfbfc !important;
+    color: #4b5563 !important;
+    font-size: 0.86rem !important;
+    font-weight: 500 !important;
+    min-height: 2rem !important;
+    padding: 0.32rem 0.68rem !important;
+}
+
+div[data-testid="stPills"] button:hover {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}
+
+/* =========================
+   Inline citation links
+   ========================= */
+
+.citation-link {
+    color: #0f5fa8 !important;
+    font-weight: 650 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.citation-link:hover {
+    color: #0b4a82 !important;
+}
+
+/* =========================
+   Inline citation markers
+   ========================= */
+
+.citation-marker {
+    color: #0f5fa8 !important;
+    font-weight: 650 !important;
+    background: #eef6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 999px;
+    padding: 0.04rem 0.32rem;
+    white-space: nowrap;
+    font-size: 0.88em;
+}
+
+.citation-marker:hover {
+    background: #dbeafe !important;
+    color: #0b4a82 !important;
+    text-decoration: none !important;
+}
+
+/* =========================
+   Evidence chunk in source panel
+   ========================= */
+
+.evidence-chunk {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 0.8rem 0.9rem;
+    color: #374151;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+/* =========================
+   Compact right-side source panel
+   ========================= */
+
+.compact-source-header {
+    padding: 0.75rem 0.85rem !important;
+    margin-bottom: 0.65rem !important;
+}
+
+.source-panel-card {
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 0.85rem 0.95rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
+    margin-bottom: 0.75rem;
+}
+
+.source-panel-kicker {
+    color: #10a37f;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+}
+
+.source-panel-title {
+    color: #111827;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+/* Make source radio list compact */
+div[data-testid="stRadio"] {
+    margin-bottom: 0.75rem;
+}
+
+div[data-testid="stRadio"] label {
+    font-size: 0.86rem !important;
+    line-height: 1.25 !important;
+    color: #111827 !important;
+}
+
+div[data-testid="stRadio"] div[role="radiogroup"] {
+    gap: 0.25rem !important;
+}
+
+/* Selected source detail */
+.source-detail-card {
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 0.8rem 0.9rem;
+    margin-top: 0.7rem;
+    margin-bottom: 0.65rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
+}
+
+.source-detail-label {
+    color: #6b7280;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+}
+
+.source-detail-title {
+    color: #111827;
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 0.35rem;
+}
+
+.source-detail-meta {
+    color: #374151;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    margin-bottom: 0.25rem;
+}
+
+.source-detail-path {
+    color: #6b7280;
+    font-size: 0.76rem;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Retrieved evidence snippet */
+.evidence-chunk {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 0.75rem 0.85rem;
+    color: #374151;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+/* =========================
+   Compact evidence panel refinement
+   ========================= */
+
+.source-panel-header {
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 0.7rem 0.85rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
+    margin-bottom: 0.75rem;
+}
+
+.source-panel-title {
+    color: #111827;
+    font-size: 0.98rem;
+    font-weight: 750;
+    line-height: 1.25;
+}
+
+.source-panel-subtitle {
+    color: #6b7280;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    margin-top: 0.15rem;
+}
+
+/* Compact source radio list */
+div[data-testid="stRadio"] {
+    margin-bottom: 0.75rem;
+}
+
+div[data-testid="stRadio"] label {
+    font-size: 0.82rem !important;
+    line-height: 1.25 !important;
+    color: #111827 !important;
+}
+
+div[data-testid="stRadio"] div[role="radiogroup"] {
+    gap: 0.18rem !important;
+}
+
+/* Selected source metadata */
+.source-detail-card.compact {
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 0.7rem 0.8rem;
+    margin-top: 0.55rem;
+    margin-bottom: 0.55rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
+}
+
+.source-detail-card.compact .source-detail-title {
+    color: #111827;
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+}
+
+.source-detail-card.compact .source-detail-meta {
+    color: #4b5563;
+    font-size: 0.76rem;
+    line-height: 1.25;
+    margin-bottom: 0.18rem;
+}
+
+.source-detail-card.compact .source-detail-path {
+    color: #9ca3af;
+    font-size: 0.72rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================
+   Unified evidence card
+   ========================= */
+
+.evidence-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 0.65rem 0.75rem;
+    color: #374151;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.evidence-title {
+    color: #111827;
+    font-size: 0.84rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.18rem;
+    text-align: left;
+}
+
+.evidence-path {
+    color: #9ca3af;
+    font-size: 0.72rem;
+    line-height: 1.25;
+    margin-bottom: 0.55rem;
+    word-break: break-word;
+}
+
+.evidence-body {
+    color: #374151;
+    font-size: 0.8rem;
+    line-height: 1.48;
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+.evidence-body.muted {
+    color: #9ca3af;
+}
+
+.evidence-truncated-note {
+    color: #9ca3af;
+    font-size: 0.72rem;
+    margin-top: 0.55rem;
+}
+
+/* =========================
+   Per-answer evidence layout
+   ========================= */
+
+div[data-testid="stHorizontalBlock"] {
+    margin-top: 0.35rem;
+    margin-bottom: 1.4rem;
+}
+
+/* =========================
+   Question card
+   ========================= */
+
+.question-card {
+    background: transparent;
+    border: none;
+    padding: 0.25rem 0 0.45rem 0;
+    margin-top: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.question-label {
+    color: #9ca3af;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.2rem;
+}
+
+.question-text {
+    color: #047857;
+    font-size: 1.02rem;
+    font-weight: 750;
+    line-height: 1.4;
+}
+
+/* =========================
+   Left-aligned user bubble
+   ========================= */
+
+.user-row-left {
+    justify-content: flex-start;
+}
+
+.user-bubble-left {
+    max-width: 72%;
+    background: #10a37f;
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-radius: 18px 18px 18px 4px;
+    font-size: 1rem;
+    line-height: 1.55;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(16, 163, 127, 0.18);
+    word-wrap: break-word;
+    margin: 0.45rem 0 0.45rem 0;
+}
+
+.evidence-section {
+    color: #6b7280;
+    font-size: 0.78rem;
+    font-weight: 650;
+    line-height: 1.3;
+    margin-bottom: 0.45rem;
+}
+.assistant-answer {
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: #111827;
+}
+
+.assistant-answer p {
+    margin-top: 0;
+    margin-bottom: 0.55rem;
+    line-height: 1.55;
+}
+
+.assistant-answer ul,
+.assistant-answer ol {
+    margin-top: 0.25rem;
+    margin-bottom: 0.65rem;
+    padding-left: 1.3rem;
+}
+
+.assistant-answer li {
+    margin-bottom: 0.2rem;
+    line-height: 1.5;
+}
+
+.assistant-answer pre {
+    margin-top: 0.4rem;
+    margin-bottom: 0.65rem;
+}
+
+.assistant-answer code {
+    line-height: 1.45;
+}
