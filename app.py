@@ -126,7 +126,7 @@ st.set_page_config(
     page_title="n8n Docs Assistant",
     page_icon="◼",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 start_vectorstore_warmup()
@@ -836,6 +836,12 @@ with st.sidebar:
 
     st.divider()
     render_technical_details(None)
+
+    st.divider()
+    st.caption(
+        "Portfolio demo built on selected n8n documentation. "
+        "Not affiliated with n8n."
+    )
 
 if st.session_state["messages"]:
     clear_col_1, clear_col_2 = st.columns([0.82, 0.18])
