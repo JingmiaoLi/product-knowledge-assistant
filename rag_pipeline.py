@@ -1087,6 +1087,13 @@ Strict rules:
 - Keep the answer concise and practical.
 - Do not end with a generic closing phrase such as "For more information" or "For more detailed guidance."
 - Make sure the final sentence is complete.
+- For broad conceptual questions, summarize the main concepts first and avoid step-by-step setup instructions unless the user explicitly asks how to configure or create something.
+- For permission-related questions, use at most three sections: Account-level roles, Project-level RBAC roles, and Custom project roles. Keep each section to one concise bullet unless the user asks for details.
+- If one source contains detailed setup steps but the user asks a broad question, use that source only as supporting detail, not as the main structure of the answer.
+- Keep broad answers concise: usually 3 to 5 bullets. Do not expand every permission or setting unless the user asks for details.
+- Avoid generic closing sentences. End with a concrete summary only when it adds useful information.
+- Prefer product-specific terms such as "workflow automation" over generic phrases such as "traditional programming" when the context is about n8n.
+- Do not add examples or capabilities that are not explicitly supported by the retrieved context.
 - Answer in English.
 
 User question:
