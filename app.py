@@ -15,28 +15,126 @@ from config import (
     INITIAL_RETRIEVAL_K,
     LLM_BACKEND,
     OLLAMA_MODEL,
+    OPENAI_COMPATIBLE_MODEL,
     SPARSE_WEIGHT,
     TEMPERATURE,
     TOP_P,
+    ENABLE_STREAMING,
 )
-from rag_pipeline import get_rag_response, warm_up_ollama
+
+from rag_pipeline import (
+    get_rag_response, 
+    warm_up_ollama,
+    prepare_rag_context,
+    stream_rag_answer,
+    clean_generated_answer,
+    normalize_no_answer_response,
+)
 
 
+@st.cache_resource
+def start_vectorstore_warmup() -> bool:
+    """Start vectorstore loading in a background thread."""
+
+    def _warmup() -> None:
+        try:
+            from retrieval.dense_retriever import load_vectorstore
+
+            load_vectorstore()
+            print("[warmup] vectorstore loaded")
+        except Exception as e:
+            print(f"[warmup] vectorstore warm-up failed: {e}")
+
+    thread = threading.Thread(
+        target=_warmup,
+        daemon=True,
+    )
+    thread.start()
+
+    return True
+
+def run_rag_query_stream(query: str) -> dict:
+    """Run retrieval first, then stream the generated answer."""
+
+    with st.status(
+        "Searching n8n documentation and ranking evidence...",
+        expanded=False,
+    ) as status:
+        result = prepare_rag_context(
+            query=query,
+            k=FINAL_RETRIEVAL_K,
+            chat_history=st.session_state.get("messages", []),
+        )
+
+        if result.get("is_direct_response") or result.get("mode") == "retrieval_only":
+            status.update(label="Answer ready.", state="complete", expanded=False)
+            return result
+
+        status.update(label="Sources selected. Generating answer...", state="running")
+
+    prompt = result.get("prompt")
+
+    if not prompt:
+        return result
+
+    chunks: list[str] = []
+
+    answer_col, source_col = st.columns([0.58, 0.42], gap="large")
+
+    with source_col:
+        render_sources_panel(
+            response=result,
+            panel_key=f"pending_{len(st.session_state.get('messages', []))}",
+        )
+
+    with answer_col:
+        def answer_stream():
+            for chunk in stream_rag_answer(prompt):
+                chunks.append(chunk)
+                yield chunk
+
+        streamed_answer = st.write_stream(answer_stream)
+
+    if isinstance(streamed_answer, str) and streamed_answer.strip():
+        final_answer = streamed_answer
+    else:
+        final_answer = "".join(chunks)
+
+    final_answer = clean_generated_answer(final_answer)
+    final_answer = normalize_no_answer_response(final_answer)
+
+    result["answer"] = final_answer
+
+    return result
+
+def run_rag_query(query: str) -> dict[str, Any]:
+    """Unified RAG entry point for the Streamlit UI."""
+
+    if ENABLE_STREAMING:
+        return run_rag_query_stream(query)
+
+    return get_rag_response(
+        query=query,
+        k=FINAL_RETRIEVAL_K,
+        chat_history=st.session_state.get("messages", []),
+    )
 # -----------------------------------------------------------------------------
 # Page configuration
 # -----------------------------------------------------------------------------
 
 st.set_page_config(
-    page_title="n8n Product Knowledge Assistant",
+    page_title="n8n Docs Assistant",
     page_icon="◼",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
+start_vectorstore_warmup()
 
 # -----------------------------------------------------------------------------
 # CSS
 # -----------------------------------------------------------------------------
+
 
 def load_css(css_path: str = "assets/styles.css") -> None:
     """Load custom CSS from an external stylesheet."""
@@ -257,6 +355,59 @@ def convert_markdown_tables_to_bullets(text: str) -> str:
 
     return "\n".join(output_lines)
 
+def clean_markdown_table_fragments(text: str) -> str:
+    """Convert broken Markdown table fragments into readable bullet points.
+
+    This handles table rows that lost their header or were broken by line breaks,
+    which can happen after documentation preprocessing.
+    """
+
+    if not text:
+        return ""
+
+    # Repair common broken table line breaks inside cells.
+    text = re.sub(r"(`[^`\n]+`)\s*\n\s*/\s*(`_FILE`)", r"\1 / \2", text)
+    text = re.sub(r"Enum string:\s*\n\s*", "Enum string: ", text)
+
+    lines = text.splitlines()
+    output_lines: list[str] = []
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Convert variable table rows such as:
+        # | `DB_TYPE` / `_FILE` | Enum string: `sqlite`, `postgresdb` | `sqlite` | The database to use. |
+        if stripped.startswith("|") and stripped.endswith("|") and "DB_" in stripped:
+            cells = [
+                clean_table_cell_text(cell)
+                for cell in stripped.strip("|").split("|")
+            ]
+
+            if len(cells) >= 4:
+                variable = cells[0]
+                var_type = cells[1]
+                default = cells[2]
+                description = cells[3]
+
+                bullet = f"- {variable}: {description}"
+
+                extra_parts = []
+
+                if var_type and var_type not in {"-", "*"}:
+                    extra_parts.append(f"Type: {var_type}")
+
+                if default and default != "-":
+                    extra_parts.append(f"Default: {default}")
+
+                if extra_parts:
+                    bullet += f" ({'; '.join(extra_parts)})"
+
+                output_lines.append(bullet)
+                continue
+
+        output_lines.append(line)
+
+    return "\n".join(output_lines)
 
 def clean_table_cell_text(text: str) -> str:
     """Clean Markdown table cell text for compact source previews."""
@@ -276,11 +427,7 @@ def clean_table_cell_text(text: str) -> str:
     # Normalize spacing around slash separators.
     cleaned = re.sub(r"\s*/\s*", " / ", cleaned)
 
-    # Normalize whitespace.
-    cleaned = re.sub(r"\s+", " ", cleaned)
-
     return cleaned.strip()
-
 
 def clean_evidence_chunk(text: str, source_title: str = "") -> str:
     """Clean retrieved evidence for user-facing display."""
@@ -293,11 +440,31 @@ def clean_evidence_chunk(text: str, source_title: str = "") -> str:
     # Remove YAML frontmatter.
     cleaned = re.sub(r"(?s)^---\s*.*?\s*---\s*", "", cleaned)
 
-    # Remove fenced code blocks from retrieved docs.
-    # These often contain raw HTML/template remnants and trigger Streamlit's copy button.
+    def remove_dirty_code_block(match: re.Match) -> str:
+        """Remove only code blocks that contain raw HTML or template remnants."""
+
+        block = match.group(0)
+
+        dirty_patterns = [
+            r"</?div[^>]*>",
+            r"\{\{.*?\}\}",
+            r"\{%.*?%\}",
+            r"\[\%.*?%\]",
+            r"\[\[.*?\]\]",
+        ]
+
+        if any(
+            re.search(pattern, block, flags=re.IGNORECASE | re.DOTALL)
+            for pattern in dirty_patterns
+        ):
+            return ""
+
+        return block
+
+
     cleaned = re.sub(
         r"(?is)```(?:[a-zA-Z0-9_-]+)?\s*.*?\s*```",
-        "",
+        remove_dirty_code_block,
         cleaned,
     )
 
@@ -339,11 +506,13 @@ def clean_evidence_chunk(text: str, source_title: str = "") -> str:
 
     cleaned = "\n".join(cleaned_lines).strip()
     cleaned = convert_markdown_tables_to_bullets(cleaned)
+    cleaned = clean_markdown_table_fragments(cleaned)
 
     # Normalize blank lines, including lines that contain only spaces.
     # For the compact source panel, one blank line is enough.
     cleaned = re.sub(r"[ \t]+\n", "\n", cleaned)
     cleaned = re.sub(r"\n\s*\n+", "\n", cleaned)
+
 
     return cleaned
 
@@ -545,7 +714,17 @@ def render_technical_details(response: dict[str, Any] | None = None) -> None:
 
     st.markdown("**Generation**")
     st.write(f"Backend: `{LLM_BACKEND}`")
-    st.write(f"Model: `{OLLAMA_MODEL}`")
+    
+
+    if LLM_BACKEND == "openai_compatible":
+        active_model = OPENAI_COMPATIBLE_MODEL
+    elif LLM_BACKEND == "ollama":
+        active_model = OLLAMA_MODEL
+    else:
+        active_model = "N/A"
+
+    st.markdown(f"Model: `{active_model}`")
+
     st.write(f"Temperature: `{TEMPERATURE}`")
     st.write(f"Top-p: `{TOP_P}`")
 
@@ -561,54 +740,12 @@ def render_technical_details(response: dict[str, Any] | None = None) -> None:
             st.write(f"Response time: `{elapsed:.1f}s`")
 
 def render_assistant_message(message: dict[str, Any], message_index: int) -> None:
-    """Render assistant answer."""
+    """Render assistant answer safely as Markdown."""
 
     response = message.get("response", {})
     answer = response.get("answer", message.get("content", ""))
 
-    st.markdown(
-        f'<div class="assistant-answer">{answer}</div>',
-        unsafe_allow_html=True,
-    )
-
-def run_rag_query(query: str) -> None:
-    """Run the RAG pipeline and append user/assistant messages to chat history."""
-
-    clean_query = query.strip()
-
-    if not clean_query:
-        return
-
-    st.session_state["messages"].append(
-        {
-            "role": "user",
-            "content": clean_query,
-        }
-    )
-
-    start_time = time.time()
-
-    with st.status(
-        "Searching n8n documentation, ranking evidence, and generating a grounded answer...",
-        expanded=False,
-    ) as status:
-        response = get_rag_response(
-            query=clean_query,
-            k=FINAL_RETRIEVAL_K,
-            chat_history=st.session_state.get("messages", []),
-        )
-        status.update(label="Answer generated.", state="complete", expanded=False)
-
-    elapsed = time.time() - start_time
-    response["elapsed_seconds"] = elapsed
-
-    st.session_state["messages"].append(
-        {
-            "role": "assistant",
-            "content": response["answer"],
-            "response": response,
-        }
-    )
+    st.markdown(answer)
 
 
 def render_welcome_message() -> None:
@@ -754,17 +891,9 @@ with chat_workspace.container():
     if st.session_state.get("pending_query"):
         pending_query = st.session_state["pending_query"]
 
-        with st.status(
-            "Searching n8n documentation, ranking evidence, and generating a grounded answer...",
-            expanded=False,
-        ):
-            start_time = time.perf_counter()
-            response = get_rag_response(
-                query=pending_query,
-                k=FINAL_RETRIEVAL_K,
-                chat_history=st.session_state.get("messages", []),
-            )
-            response_time = time.perf_counter() - start_time
+        start_time = time.perf_counter()
+        response = run_rag_query(pending_query)
+        response_time = time.perf_counter() - start_time
 
         response["elapsed_seconds"] = response_time
 
@@ -778,7 +907,6 @@ with chat_workspace.container():
 
         st.session_state["pending_query"] = None
         st.rerun()
-
 # -----------------------------------------------------------------------------
 # Chat input
 # -----------------------------------------------------------------------------

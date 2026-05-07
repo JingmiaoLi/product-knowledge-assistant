@@ -106,6 +106,34 @@ def remove_markdown_emphasis(text: str) -> str:
 
     return text
 
+def normalize_whitespace_preserving_code_blocks(text: str) -> str:
+    """Normalize whitespace outside fenced code blocks while preserving code indentation."""
+
+    lines = text.splitlines()
+    normalized_lines = []
+    inside_code_block = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        if stripped.startswith("```"):
+            inside_code_block = not inside_code_block
+            normalized_lines.append(line.rstrip())
+            continue
+
+        if inside_code_block:
+            # Preserve leading spaces inside code blocks.
+            normalized_lines.append(line.rstrip())
+        else:
+            # Normalize repeated spaces in normal prose only.
+            normalized_lines.append(re.sub(r"[ \t]+", " ", line).strip())
+
+    normalized_text = "\n".join(normalized_lines)
+
+    # Normalize excessive blank lines.
+    normalized_text = re.sub(r"\n{3,}", "\n\n", normalized_text)
+
+    return normalized_text.strip()
 
 def clean_markdown(text: str) -> str:
     """Clean Markdown before splitting while preserving useful technical content."""
@@ -115,12 +143,10 @@ def clean_markdown(text: str) -> str:
     # Remove Markdown emphasis markers while keeping the text.
     text = remove_markdown_emphasis(text)
 
-    # Normalize whitespace.
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    text = re.sub(r"[ \t]+", " ", text)
+    # Normalize whitespace without damaging code block indentation.
+    text = normalize_whitespace_preserving_code_blocks(text)
 
-    return text.strip()
-
+    return text
 
 def clean_chunk_content(text: str) -> str:
     """Clean chunk text after Markdown header splitting."""
@@ -134,13 +160,10 @@ def clean_chunk_content(text: str) -> str:
     # Remove Markdown emphasis markers while keeping the text.
     text = remove_markdown_emphasis(text)
 
-    # Normalize whitespace.
-    text = re.sub(r"[ \t]+\n", "\n", text)
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    text = re.sub(r"[ \t]+", " ", text)
+    # Normalize whitespace without damaging code block indentation.
+    text = normalize_whitespace_preserving_code_blocks(text)
 
-    return text.strip()
-
+    return text
 
 def extract_title(text: str, fallback: str) -> str:
     """Extract the first H1 or H2 title from a Markdown document."""
