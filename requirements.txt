@@ -2,12 +2,14 @@ streamlit
 langchain
 langchain-community
 langchain-text-splitters
-chromadb
 sentence-transformers
 pyyaml
 python-dotenv
 openai
-langchain-chroma
 langchain-huggingface
-ollama
 rank-bm25
+requests
+protobuf==3.20.3
+chromadb==0.5.23
+langchain-chroma==0.1.4
+
